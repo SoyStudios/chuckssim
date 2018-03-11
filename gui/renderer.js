@@ -119,7 +119,7 @@ renderBot = (bot) => {
     ctx.fill();
 
     // Draw eye
-    const rad = bot.ang * Math.PI / 180;
+    const rad = bot.a * Math.PI / 180;
     let h2 = Math.sin(rad);
     let w2 = Math.sin(rad + Math.PI/2) * -1;
     ctx.beginPath();
