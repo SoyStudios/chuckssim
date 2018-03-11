@@ -107,14 +107,15 @@ const myGameArea = {
 };
 
 renderBot = (bot) => {
-    this.width = 15;
-    this.height = 15;
+    const radius = 10;
+    // this.width = 15;
+    // this.height = 15;
     this.x = bot.x;
     this.y = bot.y;
     let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'rgba(0, 200, 0, 0.6)';
     ctx = myGameArea.context;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
+    ctx.arc(this.x, this.y, radius, 0, 2*Math.PI);
     ctx.fillStyle = bot.dna ? '#' + color.toString(16) : color;
     ctx.fill();
 
@@ -123,7 +124,7 @@ renderBot = (bot) => {
     let h2 = Math.sin(rad);
     let w2 = Math.sin(rad + Math.PI/2) * -1;
     ctx.beginPath();
-    ctx.arc(this.x + (h2 * this.width / 2), this.y + (w2 * this.width / 2), this.width * 0.1, 0, 2*Math.PI);
+    ctx.arc(this.x + (h2 * radius / 2), this.y + (w2 * radius / 2), radius * 0.1, 0, 2*Math.PI);
     ctx.fillStyle = 'black';
     ctx.fill();
 };
