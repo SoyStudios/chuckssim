@@ -6,6 +6,7 @@ import (
 	"math"
 	"math/big"
 	"math/rand"
+	"sync/atomic"
 
 	"chuckssim.soystudios.com/chuckssim/pkg/bot"
 	errors "github.com/pkg/errors"
@@ -18,6 +19,8 @@ type (
 		BotSize float64 `json:"-"`
 
 		Bots []bot.Bot `json:"bots"`
+
+		nextID int64
 	}
 )
 
@@ -28,6 +31,11 @@ func New() (*Simulation, error) {
 	sim.BotSize = 10
 
 	return sim, nil
+}
+
+// NextID returns the next unique ID
+func (sim *Simulation) NextID() int64 {
+	return atomic.AddInt64(&sim.nextID, 1)
 }
 
 // GenerateRandom populates the simulation with a random pupulation
@@ -45,6 +53,7 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 	var rndBot bot.Bot
 	for i := 0; i < maxClusters; i++ {
 		rndBot = bot.Bot{
+			ID:          sim.NextID(),
 			X:           rnd.Float64() * boundX,
 			Y:           rnd.Float64() * boundY,
 			A:           0,
@@ -57,6 +66,7 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 			}
 			a := rnd.Float64() * 2 * math.Pi
 			rndBot.X, rndBot.Y = sim.placeNextTo(rndBot.X, rndBot.Y, a)
+			rndBot.ID = sim.NextID()
 		}
 	}
 	return nil

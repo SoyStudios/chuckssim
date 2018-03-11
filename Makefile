@@ -30,8 +30,6 @@ test:
 clean:
 	rm -f chuckssim || true
 
-build: chuckssim
-
-chuckssim:
+build:
 	CGO_ENABLED=0 GOOS=${GOOS} GOARCH=${GOARCH} ${GOBUILD} ${GOBUILDFLAGS} ${LDFLAGS} 
 
