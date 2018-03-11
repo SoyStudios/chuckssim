@@ -4,7 +4,7 @@
 
 
 const CHUCKSSIM_CONFIG = {
-    simulatorUrl: 'localhost:5000',
+    simulatorUrl: '127.0.0.1:8080',
     startServerCommand: 'do something'
 };
 const backendUrl = CHUCKSSIM_CONFIG.simulatorUrl;
@@ -73,7 +73,8 @@ addStateToQueue = (state) => {
 connection.onopen = function () {
     // connection.send('Ping'); // Send the message 'Ping' to the server
     isConnected = true;
-    tickerHandler = renderTicker();
+    myGameArea.start();
+    tickerHandler = renderTicker(20);
 };
 
 // Log errors
@@ -85,9 +86,9 @@ connection.onerror = function (error) {
 // Log messages from the server
 connection.onmessage = function (e) {
     console.log('Server: ' + e.data);
-    if (e.data.type === 'state') {
-        addStateToQueue(e.data);
-    }
+    addStateToQueue(JSON.parse(e.data).bots);
+    // if (e.data.type === 'state') {
+    // }
     if (e.data.type === 'bot_details') {
         currentBot = e.data.bot;
     }
@@ -110,11 +111,11 @@ renderBot = (bot) => {
     this.height = 15;
     this.x = bot.x;
     this.y = bot.y;
-    let color = bot.dna * 10 % 493 + 300;
+    let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'green';
     ctx = myGameArea.context;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
-    ctx.fillStyle = '#' + color.toString(16);
+    ctx.fillStyle = bot.dna ? '#' + color.toString(16) : color;
     ctx.fill();
 
     // Draw eye
@@ -130,9 +131,11 @@ renderBot = (bot) => {
 
 renderState = (state) => {
     myGameArea.clear();
-    for (const bot of state.data) {
-        // console.log(bot);
-        renderBot(bot);
+    if (state && state.length) {
+        for (const bot of state) {
+            // console.log(bot);
+            renderBot(bot);
+        }
     }
 };
 
@@ -242,8 +245,6 @@ startMockSim = () => {
         stateQueue.push(newState);
         i++;
     }
-    myGameArea.start();
-    tickerHandler = renderTicker(20);
     setTimeout(
         () => {
             stopRenderTicker();
@@ -251,7 +252,8 @@ startMockSim = () => {
     )
 };
 
-startMockSim();
+// tickerHandler = renderTicker(20);
+// startMockSim();
 
 
 
