@@ -8,4 +8,4 @@ Chuck's Simulation
 
 Install with
 
-    go get chuckssim.soystudios.com/chuckssim
+    go get -u chuckssim.soystudios.com/chuckssim
