@@ -74,6 +74,10 @@ func main() {
 		WriteBufferSize: 1024,
 
 		EnableCompression: true,
+
+		CheckOrigin: func(_ *http.Request) bool {
+			return true
+		},
 	}
 	srv := &http.Server{
 		Addr: cfg.address,
