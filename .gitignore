@@ -3,3 +3,10 @@
 /cover.out
 # built binary
 /chuckssim
+
+# gui library
+node_modules
+
+# IDE stuff
+.idea
+yarn.lock
