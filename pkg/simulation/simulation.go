@@ -53,14 +53,13 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 	var rndBot bot.Bot
 	for i := 0; i < maxClusters; i++ {
 		rndBot = bot.Bot{
-			ID:          sim.NextID(),
 			X:           rnd.Float64() * boundX,
 			Y:           rnd.Float64() * boundY,
 			A:           0,
 			IsAutotroph: true,
 		}
 		for {
-			sim.Bots = append(sim.Bots, rndBot)
+			sim.addBot(rndBot)
 			if rnd.Float64() < 0.3 {
 				break
 			}
@@ -70,6 +69,11 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 		}
 	}
 	return nil
+}
+
+func (sim *Simulation) addBot(b bot.Bot) {
+	b.ID = sim.NextID()
+	sim.Bots = append(sim.Bots, b)
 }
 
 func (sim *Simulation) placeNextTo(x, y, a float64) (newX, newY float64) {

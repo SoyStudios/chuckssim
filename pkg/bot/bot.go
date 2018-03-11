@@ -1,11 +1,23 @@
 package bot
 
+import "encoding/json"
+
 type (
-	Bot struct {
-		ID int64
+	botDisplay struct {
+		ID int64 `json:"id"`
 		// x, y and angle
-		X, Y float64
-		A    float64
+		X           float64 `json:"x"`
+		Y           float64 `json:"y"`
+		A           float64 `json:"a"`
+		IsAutotroph bool    `json:"isAutotroph"`
+	}
+
+	Bot struct {
+		ID int64 `json:"id"`
+		// x, y and angle
+		X float64 `json:"x"`
+		Y float64 `json:"y"`
+		A float64 `json:"a"`
 		// delta V
 		DV float64
 
@@ -22,3 +34,17 @@ type (
 		A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z Signal
 	}
 )
+
+func (b Bot) display() botDisplay {
+	return botDisplay{
+		ID:          b.ID,
+		X:           b.X,
+		Y:           b.Y,
+		A:           b.A,
+		IsAutotroph: b.IsAutotroph,
+	}
+}
+
+func (b Bot) MarshalJSON() ([]byte, error) {
+	return json.Marshal(b.display())
+}

@@ -1,8 +1,11 @@
 package simulation
 
 import (
+	"encoding/json"
 	"math"
 	"testing"
+
+	"chuckssim.soystudios.com/chuckssim/pkg/bot"
 )
 
 type placementTest struct {
@@ -38,5 +41,23 @@ func TestPlacement(t *testing.T) {
 		if math.Abs(pt.expectY-y) > 0.0001 {
 			t.Errorf("unexpected Y %.2f, expect %.2f", y, pt.expectY)
 		}
+	}
+}
+
+func TestEncoding(t *testing.T) {
+	expect := `{"bots":[{"id":1,"x":2,"y":3,"a":4.5,"isAutotroph":false}` +
+		`,{"id":2,"x":5,"y":6,"a":7.5,"isAutotroph":true}]}`
+	sim, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sim.addBot(bot.Bot{X: 2, Y: 3, A: 4.5})
+	sim.addBot(bot.Bot{X: 5, Y: 6, A: 7.5, IsAutotroph: true})
+	enc, err := json.Marshal(sim)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(enc) != expect {
+		t.Errorf("unexpected encoded\n%s\nexpect\n%s", string(enc), expect)
 	}
 }
