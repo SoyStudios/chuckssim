@@ -59,7 +59,7 @@ func main() {
 		)
 		os.Exit(1)
 	}
-	sim.BotSize = 30
+	sim.BotSize = 20
 	err = sim.GenerateRandom(1000, 1000, 20, 50)
 	if err != nil {
 		// nolint: errcheck
