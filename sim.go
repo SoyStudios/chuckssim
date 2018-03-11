@@ -59,7 +59,7 @@ func main() {
 		)
 		os.Exit(1)
 	}
-	err = sim.GenerateRandom(100, 100, 20, 50)
+	err = sim.GenerateRandom(1000, 1000, 20, 50)
 	if err != nil {
 		// nolint: errcheck
 		logger.Log("level", "error",
@@ -124,7 +124,7 @@ func handler(upgrader websocket.Upgrader, sim *simulation.Simulation, logger log
 }
 
 func serveSimulation(sim *simulation.Simulation, conn *websocket.Conn, logger log.Logger) {
-	ticker := time.NewTicker(1000 / 30 * time.Millisecond)
+	ticker := time.NewTicker(1000 / 24 * time.Millisecond)
 	defer func() {
 		ticker.Stop()
 		// nolint: errcheck
