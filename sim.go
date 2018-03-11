@@ -13,6 +13,7 @@ var AppBuildID = "HEAD"
 
 var (
 	logger log.Logger
+	cfg    *config
 )
 
 func main() {
@@ -24,6 +25,16 @@ func main() {
 		"appBuild", AppBuildID,
 		"caller", log.DefaultCaller,
 	)
+	// nolint: errcheck
 	logger.Log("level", "info",
 		"msg", "starting up")
+	var err error
+	cfg, err = newDefaultConfig()
+	if err != nil {
+		// nolint: errcheck
+		logger.Log("level", "error",
+			"msg", "error initializing config",
+			"err", err)
+		os.Exit(1)
+	}
 }
