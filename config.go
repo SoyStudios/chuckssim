@@ -1,8 +1,14 @@
 package main
 
-import "time"
+import (
+	"flag"
+	"sync"
+	"time"
+)
 
 type config struct {
+	flagParsed sync.Once
+
 	address string
 
 	readTimeout  time.Duration
@@ -20,4 +26,11 @@ func newDefaultConfig() (*config, error) {
 	cfg.idleTimeout = 2 * time.Minute
 
 	return cfg, nil
+}
+
+func (cfg *config) parseFlags() {
+	cfg.flagParsed.Do(func() {
+		flag.StringVar(&cfg.address, "a", "127.0.0.1:8080", "Listen Address")
+		flag.Parse()
+	})
 }
