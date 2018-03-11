@@ -109,8 +109,8 @@ const myGameArea = {
 renderBot = (bot) => {
     this.width = 15;
     this.height = 15;
-    this.x = bot.x;
-    this.y = bot.y;
+    this.x = bot.x *5;
+    this.y = bot.y *5;
     let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'green';
     ctx = myGameArea.context;
     ctx.beginPath();
@@ -119,7 +119,7 @@ renderBot = (bot) => {
     ctx.fill();
 
     // Draw eye
-    const rad = bot.ang * Math.PI / 180;
+    const rad = bot.a * Math.PI / 180;
     let h2 = Math.sin(rad);
     let w2 = Math.sin(rad + Math.PI/2) * -1;
     ctx.beginPath();
