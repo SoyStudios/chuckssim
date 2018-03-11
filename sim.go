@@ -155,10 +155,14 @@ func serveSimulation(sim *simulation.Simulation, conn *websocket.Conn, logger lo
 	}()
 	for {
 		select {
-		case _, ok := <-messages:
+		case msg, ok := <-messages:
 			if !ok {
 				return
 			}
+			// nolint: errcheck
+			logger.Log("level", "info",
+				"msg", "received WS msg",
+				"content", msg)
 		case <-ticker.C:
 			err := conn.WriteJSON(sim)
 			if err != nil {
