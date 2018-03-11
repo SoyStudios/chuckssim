@@ -111,7 +111,7 @@ renderBot = (bot) => {
     this.height = 15;
     this.x = bot.x;
     this.y = bot.y;
-    let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'green';
+    let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'rgba(0, 200, 0, 0.6)';
     ctx = myGameArea.context;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
