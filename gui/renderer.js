@@ -74,7 +74,7 @@ connection.onopen = function () {
     // connection.send('Ping'); // Send the message 'Ping' to the server
     isConnected = true;
     myGameArea.start();
-    tickerHandler = renderTicker(20);
+    tickerHandler = renderTicker(50);
 };
 
 // Log errors
