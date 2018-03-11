@@ -1,0 +1,5 @@
+*.swp
+*.swo
+/cover.out
+# built binary
+/chuckssim
