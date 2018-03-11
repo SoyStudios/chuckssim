@@ -99,8 +99,6 @@ const myGameArea = {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.context = this.canvas.getContext("2d");
-        // document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        // this.interval = setInterval(updateGameArea, 20);
     },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -108,16 +106,25 @@ const myGameArea = {
 };
 
 renderBot = (bot) => {
-    console.log('here');
     this.width = 15;
     this.height = 15;
     this.x = bot.x;
     this.y = bot.y;
-    // this.update = function(){
-        ctx = myGameArea.context;
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    // };
+    let color = bot.dna * 10 % 493 + 300;
+    ctx = myGameArea.context;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.width, 0, 2*Math.PI);
+    ctx.fillStyle = '#' + color.toString(16);
+    ctx.fill();
+
+    // Draw eye
+    const rad = bot.ang * Math.PI / 180;
+    let h2 = Math.sin(rad);
+    let w2 = Math.sin(rad + Math.PI/2) * -1;
+    ctx.beginPath();
+    ctx.arc(this.x + (h2 * this.width / 2), this.y + (w2 * this.width / 2), this.width * 0.1, 0, 2*Math.PI);
+    ctx.fillStyle = 'black';
+    ctx.fill();
 };
 
 
@@ -127,7 +134,6 @@ renderState = (state) => {
         // console.log(bot);
         renderBot(bot);
     }
-  // do stuff to render on canvas
 };
 
 togglePause = () => {
@@ -166,25 +172,31 @@ let mockInitialState = {
     data: [
         {
             id: 1,
-            x: 1.0,
-            y: 0.6,
-            ang: 240,
+            x: 100.0,
+            y: 100.6,
+            ang: 0,
+            dna: 793
+        },
+        {
+            id: 3,
+            x: 200.0,
+            y: 100.6,
+            ang: 90,
             dna: 2006
         },
         {
             id: 3,
-            x: 4.0,
-            y: 1.6,
-            ang: 120,
-            dna: 2006
+            x: 300.0,
+            y: 100.6,
+            ang: 180,
+            dna: 2007
         },
-
         {
-            id: 3,
-            x: 40.0,
-            y: 12.6,
-            ang: 120,
-            dna: 2012
+            id: 4,
+            x: 400.0,
+            y: 100.6,
+            ang: 270,
+            dna: 2009
         },
     ]
 };
@@ -224,14 +236,6 @@ changeStateMock = (prevState) => {
 startMockSim = () => {
     let newState = mockInitialState;
     stateQueue.push(newState);
-    newState = changeStateMock(newState);
-    stateQueue.push(newState);
-    newState = changeStateMock(newState);
-    stateQueue.push(newState);
-    newState = changeStateMock(newState);
-    stateQueue.push(newState);
-    newState = changeStateMock(newState);
-    stateQueue.push(newState);
     let i = 0;
     while (i < 500) {
         newState = changeStateMock(newState);
@@ -243,7 +247,7 @@ startMockSim = () => {
     setTimeout(
         () => {
             stopRenderTicker();
-        }, 10000
+        }, 100000
     )
 };
 
