@@ -109,8 +109,8 @@ const myGameArea = {
 renderBot = (bot) => {
     this.width = 15;
     this.height = 15;
-    this.x = bot.x *5;
-    this.y = bot.y *5;
+    this.x = bot.x;
+    this.y = bot.y;
     let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'green';
     ctx = myGameArea.context;
     ctx.beginPath();
