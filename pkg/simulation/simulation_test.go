@@ -46,7 +46,8 @@ func TestPlacement(t *testing.T) {
 
 func TestEncoding(t *testing.T) {
 	expect := `{"bots":[{"id":1,"x":2,"y":3,"a":4.5,"isAutotroph":false}` +
-		`,{"id":2,"x":5,"y":6,"a":7.5,"isAutotroph":true}]}`
+		`,{"id":2,"x":5,"y":6,"a":7.5,"isAutotroph":true}]` +
+		`,"type":"state"}`
 	sim, err := New()
 	if err != nil {
 		t.Fatal(err)

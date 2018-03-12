@@ -1,5 +1,6 @@
 package bot
 
 type (
-	DNA struct{}
+	DNA struct {
+	}
 )
