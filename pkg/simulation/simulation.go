@@ -31,8 +31,10 @@ type (
 
 func (bots Bots) MarshalJSON() ([]byte, error) {
 	sl := make([]bot.Bot, len(bots))
-	for i, b := range bots {
-		sl[i-1] = b
+	i := 0
+	for _, b := range bots {
+		sl[i] = b
+		i++
 	}
 	return json.Marshal(sl)
 }
