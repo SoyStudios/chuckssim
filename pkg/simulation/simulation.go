@@ -72,7 +72,7 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 		rndBot = bot.Bot{
 			X:           rnd.Float64() * boundX,
 			Y:           rnd.Float64() * boundY,
-			A:           0,
+			A:           rnd.Float64() * 2 * math.Pi,
 			IsAutotroph: true,
 		}
 		for {
