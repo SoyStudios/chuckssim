@@ -157,9 +157,9 @@ renderBot = (bot) => {
     ctx.fill();
 
     // Draw eye
-    const rad = bot.a * Math.PI / 180;
-    let h2 = Math.sin(rad);
-    let w2 = Math.sin(rad + Math.PI/2) * -1;
+    const rad = bot.a / Math.PI * 180;
+    let h2 = Math.cos(rad);
+    let w2 = Math.sin(rad);
     ctx.beginPath();
     ctx.arc(this.x + (h2 * radius / 2), this.y + (w2 * radius / 2), radius * 0.1, 0, 2*Math.PI);
     ctx.fillStyle = 'black';

@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 	"os"
-	"time"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 
-	"chuckssim.soystudios.com/chuckssim/pkg/simulation"
 	"chuckssim.soystudios.com/chuckssim/pkg/bot"
+	"chuckssim.soystudios.com/chuckssim/pkg/simulation"
 	"github.com/go-kit/kit/log"
 	"github.com/gorilla/websocket"
 )
@@ -182,20 +182,19 @@ func serveSimulation(sim *simulation.Simulation, conn *websocket.Conn, logger lo
 				if err != nil {
 					return
 				}
-				for _, bot := range sim.Bots {
-					if bot.ID == id {
-						logger.Log("level", "info", "msg", bot.ID)
-						b := BotDetail{Type: "BotDetail", Bot: bot}
-            err2 := conn.WriteJSON(b)
-            if err2 != nil {
-      				// nolint: errcheck
-      				logger.Log("level", "error",
-      					"msg", "error writing bot",
-      					"err", err2)
-      				return
-      			}
-            break
-					}
+				bot, ok := sim.Bots[id]
+				if !ok {
+					continue
+				}
+				logger.Log("level", "info", "msg", bot.ID)
+				b := BotDetail{Type: "BotDetail", Bot: bot}
+				err = conn.WriteJSON(b)
+				if err != nil {
+					// nolint: errcheck
+					logger.Log("level", "error",
+						"msg", "error writing bot",
+						"err", err)
+					return
 				}
 			}
 		case <-ticker.C:

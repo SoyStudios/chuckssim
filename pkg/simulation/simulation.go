@@ -2,6 +2,7 @@ package simulation
 
 import (
 	crand "crypto/rand"
+	"encoding/json"
 	"io"
 	"math"
 	"math/big"
@@ -18,17 +19,30 @@ type (
 
 		BotSize float64 `json:"-"`
 
-		Bots []bot.Bot `json:"bots"`
+		Bots Bots `json:"bots"`
 
 		Type string `json:"type"`
 
 		nextID int64
 	}
+
+	Bots map[int64]bot.Bot
 )
+
+func (bots Bots) MarshalJSON() ([]byte, error) {
+	sl := make([]bot.Bot, len(bots))
+	i := 0
+	for _, b := range bots {
+		sl[i] = b
+		i++
+	}
+	return json.Marshal(sl)
+}
 
 func New() (*Simulation, error) {
 	sim := &Simulation{}
 
+	sim.Bots = make(map[int64]bot.Bot)
 	sim.RandSource = crand.Reader
 	sim.BotSize = 10
 	sim.Type = "state"
@@ -52,13 +66,13 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 	}
 	rnd := rand.New(rand.NewSource(seed.Int64()))
 	maxClusters := rnd.Intn(max+1) + min
-	sim.Bots = make([]bot.Bot, 0, maxClusters*10)
+	sim.Bots = make(map[int64]bot.Bot, maxClusters*10)
 	var rndBot bot.Bot
 	for i := 0; i < maxClusters; i++ {
 		rndBot = bot.Bot{
 			X:           rnd.Float64() * boundX,
 			Y:           rnd.Float64() * boundY,
-			A:           0,
+			A:           rnd.Float64() * 2 * math.Pi,
 			IsAutotroph: true,
 		}
 		for {
@@ -76,7 +90,7 @@ func (sim *Simulation) GenerateRandom(boundX, boundY float64, min, max int) erro
 
 func (sim *Simulation) addBot(b bot.Bot) {
 	b.ID = sim.NextID()
-	sim.Bots = append(sim.Bots, b)
+	sim.Bots[b.ID] = b
 }
 
 func (sim *Simulation) placeNextTo(x, y, a float64) (newX, newY float64) {

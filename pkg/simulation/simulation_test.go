@@ -45,14 +45,13 @@ func TestPlacement(t *testing.T) {
 }
 
 func TestEncoding(t *testing.T) {
-	expect := `{"bots":[{"id":1,"x":2,"y":3,"a":4.5,"isAutotroph":false}` +
-		`,{"id":2,"x":5,"y":6,"a":7.5,"isAutotroph":true}]}`
+	expect := `{"bots":[{"id":1,"x":2,"y":3,"a":4.5,"isAutotroph":false}]` +
+		`,"type":"state"}`
 	sim, err := New()
 	if err != nil {
 		t.Fatal(err)
 	}
 	sim.addBot(bot.Bot{X: 2, Y: 3, A: 4.5})
-	sim.addBot(bot.Bot{X: 5, Y: 6, A: 7.5, IsAutotroph: true})
 	enc, err := json.Marshal(sim)
 	if err != nil {
 		t.Fatal(err)
