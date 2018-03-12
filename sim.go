@@ -5,8 +5,11 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"strings"
+	"strconv"
 
 	"chuckssim.soystudios.com/chuckssim/pkg/simulation"
+	"chuckssim.soystudios.com/chuckssim/pkg/bot"
 	"github.com/go-kit/kit/log"
 	"github.com/gorilla/websocket"
 )
@@ -21,6 +24,14 @@ var (
 	cfg    *config
 	ctx    context.Context
 	cancel context.CancelFunc
+)
+
+type (
+	BotDetail struct {
+		Bot bot.Bot `json:"bot"`
+
+		Type string `json:"type"`
+	}
 )
 
 func main() {
@@ -164,6 +175,29 @@ func serveSimulation(sim *simulation.Simulation, conn *websocket.Conn, logger lo
 			logger.Log("level", "info",
 				"msg", "received WS msg",
 				"content", msg)
+			if strings.HasPrefix(string(msg), "bot/") {
+				logger.Log("level", "info", "msg", "bot info requested")
+				msgList := strings.Split(string(msg), "/")
+				id, err := strconv.ParseInt(msgList[1], 10, 64)
+				if err != nil {
+					return
+				}
+				for _, bot := range sim.Bots {
+					if bot.ID == id {
+						logger.Log("level", "info", "msg", bot.ID)
+						b := BotDetail{Type: "BotDetail", Bot: bot}
+            err2 := conn.WriteJSON(b)
+            if err2 != nil {
+      				// nolint: errcheck
+      				logger.Log("level", "error",
+      					"msg", "error writing bot",
+      					"err", err2)
+      				return
+      			}
+            break
+					}
+				}
+			}
 		case <-ticker.C:
 			err := conn.WriteJSON(sim)
 			if err != nil {

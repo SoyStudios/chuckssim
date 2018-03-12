@@ -27,6 +27,9 @@ let currentBot = {
     code: ''
 };
 
+let currentState = {};
+let radius = 10;
+
 
 // let electronify = require('electronify-server');
 // const startServerCommand = CHUCKSSIM_CONFIG.startServerCommand;
@@ -69,6 +72,8 @@ addStateToQueue = (state) => {
     stateQueue.unshift(state);
 };
 
+let initial = 0;
+
 // When the connection is open, send some data to the server
 connection.onopen = function () {
     // connection.send('Ping'); // Send the message 'Ping' to the server
@@ -85,12 +90,24 @@ connection.onerror = function (error) {
 
 // Log messages from the server
 connection.onmessage = function (e) {
-    console.log('Server: ' + e.data);
-    addStateToQueue(JSON.parse(e.data).bots);
-    // if (e.data.type === 'state') {
-    // }
-    if (e.data.type === 'bot_details') {
-        currentBot = e.data.bot;
+    if (initial === 0) {
+        console.log(JSON.parse(e.data));
+        initial++;
+    }
+    let data = {};
+    try {
+        data = JSON.parse(e.data);
+    } catch (e) {
+        console.warn(e);
+    }
+    if (Object.keys(data).length > 0) {
+        if (data.type === 'state') {
+            addStateToQueue(data.bots);
+        }
+        if (data.type === 'BotDetail') {
+            currentBot = data.bot;
+            console.log(currentBot);
+        }
     }
 };
 
@@ -106,8 +123,28 @@ const myGameArea = {
     }
 };
 
+myGameArea.canvas.onclick = (e) => {
+    // correct mouse coordinates:
+    var rect = myGameArea.canvas.getBoundingClientRect(),  // make x/y relative to canvas
+        context = myGameArea.canvas.getContext("2d"),
+        x = e.clientX - rect.left,
+        y = e.clientY - rect.top,
+        i = 0, bot;
+
+    // check which circle:
+    while(bot = currentState[i++]) {
+        context.beginPath();  // we build a path to check with, but not to draw
+        context.arc(bot.x, bot.y, radius, 0, 2*Math.PI);
+        if (context.isPointInPath(x, y)) {
+            alert("Clicked circle: " + bot.id);
+            getBotDetails(bot.id);
+            break;
+        }
+    }
+};
+
 renderBot = (bot) => {
-    const radius = 10;
+    radius = 10;
     // this.width = 15;
     // this.height = 15;
     this.x = bot.x;
@@ -132,6 +169,7 @@ renderBot = (bot) => {
 
 renderState = (state) => {
     myGameArea.clear();
+    currentState = state;
     if (state && state.length) {
         for (const bot of state) {
             // console.log(bot);

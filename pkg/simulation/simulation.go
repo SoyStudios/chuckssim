@@ -20,6 +20,8 @@ type (
 
 		Bots []bot.Bot `json:"bots"`
 
+		Type string `json:"type"`
+
 		nextID int64
 	}
 )
@@ -29,6 +31,7 @@ func New() (*Simulation, error) {
 
 	sim.RandSource = crand.Reader
 	sim.BotSize = 10
+	sim.Type = "state"
 
 	return sim, nil
 }
