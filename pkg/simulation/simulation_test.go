@@ -27,11 +27,10 @@ func providePlacementTests() []placementTest {
 }
 
 func TestPlacement(t *testing.T) {
-	sim, err := New()
+	sim, err := New(Config{BotSize: 5})
 	if err != nil {
 		t.Fatal(err)
 	}
-	sim.BotSize = 5
 	for _, pt := range providePlacementTests() {
 		x, y := sim.placeNextTo(pt.X, pt.Y, pt.A)
 		if math.Abs(pt.expectX-x) > 0.0001 {
@@ -47,7 +46,7 @@ func TestPlacement(t *testing.T) {
 func TestEncoding(t *testing.T) {
 	expect := `{"bots":[{"id":1,"x":2,"y":3,"a":4.5,"isAutotroph":false}]` +
 		`,"type":"state"}`
-	sim, err := New()
+	sim, err := New(Config{BotSize: 5})
 	if err != nil {
 		t.Fatal(err)
 	}

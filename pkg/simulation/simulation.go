@@ -14,10 +14,14 @@ import (
 )
 
 type (
+	Config struct {
+		BotSize  float64
+		GridSize float64
+	}
+
 	Simulation struct {
 		RandSource io.Reader `json:"-"`
-
-		BotSize float64 `json:"-"`
+		Config     Config    `json:"-"`
 
 		Bots Bots `json:"bots"`
 
@@ -39,12 +43,12 @@ func (bots Bots) MarshalJSON() ([]byte, error) {
 	return json.Marshal(sl)
 }
 
-func New() (*Simulation, error) {
+func New(cfg Config) (*Simulation, error) {
 	sim := &Simulation{}
+	sim.Config = cfg
 
 	sim.Bots = make(map[int64]bot.Bot)
 	sim.RandSource = crand.Reader
-	sim.BotSize = 10
 	sim.Type = "state"
 
 	return sim, nil
@@ -94,5 +98,5 @@ func (sim *Simulation) addBot(b bot.Bot) {
 }
 
 func (sim *Simulation) placeNextTo(x, y, a float64) (newX, newY float64) {
-	return x + sim.BotSize*math.Cos(a), y + sim.BotSize*math.Sin(a)
+	return x + sim.Config.BotSize*math.Cos(a), y + sim.Config.BotSize*math.Sin(a)
 }
