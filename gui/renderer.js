@@ -29,6 +29,8 @@ let currentBot = {
 
 let currentState = {};
 let radius = 10;
+let botDetailsOpen = false;
+const botDetails = document.getElementById('current-bot-details');
 
 
 // let electronify = require('electronify-server');
@@ -106,7 +108,9 @@ connection.onmessage = function (e) {
         }
         if (data.type === 'BotDetail') {
             currentBot = data.bot;
-            console.log(currentBot);
+            botDetails.style.display = 'block';
+            botDetailsOpen = true;
+            setCurrentBotData(currentBot);
         }
     }
 };
@@ -136,20 +140,49 @@ myGameArea.canvas.onclick = (e) => {
         context.beginPath();  // we build a path to check with, but not to draw
         context.arc(bot.x, bot.y, radius, 0, 2*Math.PI);
         if (context.isPointInPath(x, y)) {
-            alert("Clicked circle: " + bot.id);
+            // alert("Clicked circle: " + bot.id);
             getBotDetails(bot.id);
             break;
         }
     }
 };
 
+setCurrentBotData = (bot) => {
+    if (botDetailsOpen) {
+        const idField = document.getElementById('current-bot-id');
+        const xField = document.getElementById('current-bot-x');
+        const yField = document.getElementById('current-bot-y');
+        const angleField = document.getElementById('current-bot-angle');
+        const auttrField = document.getElementById('current-bot-auttr');
+        idField.value = bot.id + '';
+        xField.value = bot.x + '';
+        yField.value = bot.y + '';
+        angleField.value = bot.a + '';
+        auttrField.value = bot.isAutotroph + '';
+    }
+};
+
+closeBotDetails = () => {
+    botDetailsOpen = false;
+    botDetails.style.display = 'none';
+    currentBot = {
+        id: '',
+        x: 0,
+        y: 0,
+        ang: '',
+        desc: '',
+        code: ''
+    };
+};
+
 renderBot = (bot) => {
-    radius = 10;
-    // this.width = 15;
-    // this.height = 15;
     this.x = bot.x;
     this.y = bot.y;
     let color = bot.dna ? bot.dna * 10 % 493 + 300 : 'rgba(0, 200, 0, 0.6)';
+    if (currentBot.id === bot.id) {
+        color = 'red';
+        setCurrentBotData(bot);
+    }
     ctx = myGameArea.context;
     ctx.beginPath();
     ctx.arc(this.x, this.y, radius, 0, 2*Math.PI);
